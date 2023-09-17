@@ -1,25 +1,10 @@
 const Hapi = require("@hapi/hapi");
-const Bcrypt = require("bcrypt");
 
-const { User } = require("./db");
+const userRoutes = require("./routes/user");
+const authRoutes = require("./routes/auth");
 
-async function initialSeed() {
-  User.findOrCreate({
-    where: { email: "jascha@pt.app" },
-    defaults: {
-      password: await Bcrypt.hash("ptappadmin", 10),
-      role: "trainer",
-    },
-  });
-
-  User.findOrCreate({
-    where: { email: "oender@pt.app" },
-    defaults: {
-      password: await Bcrypt.hash("ptappadmin", 10),
-      role: "trainer",
-    },
-  });
-}
+const initialSeed = require("./seed");
+const auth = require("./routes/auth");
 
 initialSeed();
 
@@ -48,65 +33,7 @@ const init = async () => {
 
   server.auth.default("session");
 
-  server.route([
-    {
-      method: "GET",
-      path: "/",
-      handler: async (request, h) => {
-        try {
-          return await User.findAll();
-        } catch (err) {
-          console.log(err);
-        }
-      },
-      options: { auth: false },
-    },
-
-    {
-      method: "POST",
-      path: "/register",
-      options: {
-        auth: false,
-      },
-      handler: async (request, h) => {
-        const { email, password } = request.payload;
-        const user = await User.create({
-          email,
-          password: await Bcrypt.hash(password, 10),
-        });
-        return h.response(user.id).code(201);
-      },
-    },
-    {
-      method: "POST",
-      path: "/login",
-      handler: async (request, h) => {
-        const { email, password } = request.payload;
-
-        const account = await User.findOne({
-          where: { email },
-        });
-
-        if (!account || !(await Bcrypt.compare(password, account.password))) {
-          return h.response().code(401);
-        }
-
-        request.cookieAuth.set({ id: account.id });
-
-        return h
-          .response({
-            id: account.id,
-            email,
-          })
-          .code(200);
-      },
-      options: {
-        auth: {
-          mode: "try",
-        },
-      },
-    },
-  ]);
+  server.route([...userRoutes, ...authRoutes]);
 
   await server.start();
   console.log(`Server running on ${server.info.uri}`);
