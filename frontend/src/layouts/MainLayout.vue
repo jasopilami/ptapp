@@ -6,7 +6,12 @@
       </q-page>
     </q-page-container>
 
-    <q-tabs v-model="tab" class="fixed-bottom bg-primary" active-color="accent">
+    <q-tabs
+      v-if="$route.path != '/login'"
+      v-model="tab"
+      class="fixed-bottom bg-primary"
+      active-color="accent"
+    >
       <q-route-tab
         v-for="nav in navigation"
         :key="nav.to"
