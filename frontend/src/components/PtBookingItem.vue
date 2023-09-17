@@ -9,6 +9,7 @@
           session.trainer.name
         }}</q-item-label>
       </div>
+
       <div>
         <div class="q-mb-md float-left">
           <q-item-label class="text-accent">{{ session.title }}</q-item-label>
@@ -31,6 +32,7 @@
       <q-item-label caption>
         {{ session.description }}
       </q-item-label>
+      <slot />
     </q-item-section>
   </q-item>
 </template>

@@ -11,34 +11,51 @@
           v-for="session in trainer.sessions"
           :key="session.id"
           :session="session"
-        />
+        >
+          <q-checkbox
+            v-model="session.booked"
+            label="Bin dabei"
+            color="teal"
+            left-label
+          />
+        </pt-booking-item>
       </q-list>
 
       <div class="text-h6 text-grey-4">Gesamt</div>
 
       <div class="text-h5 text-accent">
-        100 Euro
+        {{ gesamt }}
         <q-icon name="euro_symbol" />
       </div>
     </div>
 
     <q-btn
+      to="/account"
       color="accent"
       label="OK"
       rounded
       glossy
       icon="shopping_cart"
-      class="full-width q-mt-xl"
+      class="full-width q-my-xl"
     />
   </q-page>
 </template>
 
 <script setup>
+import { computed, reactive, ref } from "vue";
+
 const props = defineProps({
   id: String,
 });
 
-const trainer = {
+const gesamt = computed(() => {
+  return trainer.sessions
+    .filter((s) => s.booked)
+    .map((s) => s.price)
+    .reduce((a, b) => a + b, 0);
+});
+
+const trainer = reactive({
   id: props.id,
   avatar: "https://cdn.quasar.dev/img/avatar.png",
   name: "Jascha",
@@ -54,6 +71,7 @@ const trainer = {
       price: 200,
       time_in_minutes: 60,
       time_descriptor: "Jeden Dienstag um 16:00",
+      booked: false,
     },
     {
       id: 2,
@@ -62,7 +80,8 @@ const trainer = {
       price: 100,
       time_in_minutes: 120,
       time_descriptor: "Samstags um 18:00",
+      booked: false,
     },
   ],
-};
+});
 </script>

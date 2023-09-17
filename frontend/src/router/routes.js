@@ -10,7 +10,7 @@ const routes = [
         component: () => import("pages/BookingTrainerPage.vue"),
         props: true,
       },
-      { path: "/history", component: () => import("pages/HistoryPage.vue") },
+      { path: "/account", component: () => import("pages/AccountPage.vue") },
       { path: "/login", component: () => import("pages/LoginPage.vue") },
     ],
   },

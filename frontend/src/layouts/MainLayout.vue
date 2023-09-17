@@ -33,8 +33,8 @@ const navigation = [
     to: "/booking",
   },
   {
-    icon: "history",
-    to: "/history",
+    icon: "account_circle",
+    to: "/account",
   },
 ];
 </script>

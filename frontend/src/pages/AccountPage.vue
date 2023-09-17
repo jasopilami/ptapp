@@ -1,4 +1,11 @@
 <template>
+  <pt-header>Dein Account</pt-header>
+
+  <div class="text-center text-h6 text-grey-4">
+    <div>{{ user.name }}</div>
+    <div>{{ user.email }}</div>
+  </div>
+
   <pt-header>Deine Buchungen</pt-header>
   <q-page padding>
     <q-list bordered>
@@ -12,6 +19,11 @@
 </template>
 
 <script setup>
+const user = {
+  name: 'Jascha',
+  email: 'jascha@web.de',
+};
+
 const buchungen = [
   {
     id: 1,
