@@ -2,8 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "./database.db",
-  logging: false,
+  storage: "database.sqlite",
 });
 
 const User = sequelize.define("User", {
@@ -11,10 +10,6 @@ const User = sequelize.define("User", {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: true,
   },
   email: {
     type: DataTypes.STRING,
@@ -25,15 +20,16 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  role: {
+    type: DataTypes.ENUM("user", "trainer"),
+    defaultValue: "user",
+  },
 });
 
-async function connect() {
-  try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
-}
+sequelize.sync({ force: true }).then(() => {
+  console.log("Database & tables synced");
+});
 
-connect();
+module.exports = {
+  User,
+};
