@@ -1,10 +1,15 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const passport = require("passport");
+const router = express.Router();
 
-const userRouter = require('./users')
-const trainerRouter = require('./trainers')
+const userRouter = express.Router();
+router.use("/users", userRouter);
 
-router.use('/users', userRouter)
-router.use('/trainers', trainerRouter)
+userRouter.get("/", (req, res) => {
+  res.send(req.session);
+});
 
-module.exports = router
+const trainerRouter = express.Router();
+router.use("/trainers", trainerRouter);
+
+module.exports = router;
