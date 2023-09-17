@@ -1,7 +1,7 @@
 <template>
-  <div class="text-h4">Neuigkeiten</div>
+  <pt-header>Neuigkeiten</pt-header>
   <q-page padding>
-    <q-card v-for="n in news" :key="n.id">
+    <q-card v-for="n in news" :key="n.id" class="q-my-md" flat>
       <q-card-section>
         <div class="text-subtitle2">{{ n.date }}</div>
         <div class="text-h6">{{ n.title }}</div>
@@ -15,14 +15,18 @@
 </template>
 
 <script setup>
-
 const news = [
   {
     id: 1,
-    title: 'Öffnungszeiten',
-    date: '02.09.2023',
-    content: 'Auch an Weihnachten haben wir für euch offen'
-  }
-]
-
+    title: "Öffnungszeiten Weihnachten",
+    date: "20.12.2023",
+    content: "Auch an Weihnachten haben wir für euch offen",
+  },
+  {
+    id: 2,
+    title: "Öffnungszeiten Ostern",
+    date: "20.03.2023",
+    content: "Auch an Ostern haben wir weiterhin offen",
+  },
+];
 </script>
