@@ -14,6 +14,7 @@
       </template>
     </q-input>
     <q-input
+      :type="isPwd ? 'password' : 'text'"
       color="accent"
       rounded
       class="q-my-md"
@@ -21,12 +22,26 @@
       v-model="password"
       label="Password"
     >
+      <template v-slot:append>
+        <q-icon
+          :name="isPwd ? 'visibility_off' : 'visibility'"
+          class="cursor-pointer"
+          @click="isPwd = !isPwd"
+        />
+      </template>
       <template v-slot:prepend>
         <q-icon name="lock_open" />
       </template>
     </q-input>
+
     <div class="q-my-xl" />
-    <q-btn label="Login" glossy color="accent" class="full-width" />
+    <q-btn
+      label="Login"
+      glossy
+      color="accent"
+      class="full-width"
+      @click="login"
+    />
     <q-btn
       label="Registrieren"
       color="grey-6"
@@ -37,6 +52,25 @@
 </template>
 
 <script setup>
-const email = "";
-const password = "";
+import { api } from "../boot/axios";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const email = ref("");
+const password = ref("");
+
+const isPwd = ref(true);
+
+async function login() {
+  try {
+    await api.post("/login", {
+      email: email.value,
+      password: password.value,
+    });
+    router.push("/");
+  } catch (err) {
+    console.error(err)
+  }
+}
 </script>

@@ -1,20 +1,23 @@
 <template>
   <q-item clickable v-ripple>
     <q-item-section class="q-mb-md">
-      <div v-if="session.trainer" class="row q-mb-md">
+      <div v-if="session.Trainer" class="row q-mb-md">
         <q-avatar color="primary" text-color="white" class="q-mr-md">
-          <img :src="session.trainer.avatar" />
+          <img :src="session.Trainer.avatar" />
         </q-avatar>
         <q-item-label class="self-center text-h6">{{
-          session.trainer.name
+          session.Trainer.name
         }}</q-item-label>
+      </div>
+      <div class="text-caption text-grey">
+        Gebucht am: {{ new Date(session.createdAt).toLocaleDateString() }}
       </div>
 
       <div>
         <div class="q-mb-md float-left">
           <q-item-label class="text-accent">{{ session.title }}</q-item-label>
           <q-item-label>
-            {{ session.time_descriptor }}
+            {{ session.dateTime }}
           </q-item-label>
         </div>
         <div class="q-mb-md float-right">
@@ -24,7 +27,7 @@
           </div>
 
           <div class="text-positive">
-            {{ session.time_in_minutes }} Minuten
+            {{ session.timeInMinutes }} Minuten
             <q-icon name="schedule" />
           </div>
         </div>

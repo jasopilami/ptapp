@@ -9,15 +9,14 @@
         </q-avatar>
         <div class="text-h5 self-center">
           {{ t.name }}
+          <div class="text-caption text-grey">
+            {{ t.email }}
+          </div>
         </div>
       </div>
       <q-card-section>
-        <div class="text-overline">{{ t.pricePerHour }} Euro/Stunde</div>
-        <div class="q-mb-xs q-gutter-sm">
-          <q-badge v-for="tag in t.tags" :key="tag" outline :label="tag" />
-        </div>
-        <div class="text-caption text-grey">
-          {{ t.content }}
+        <div>
+          {{ t.description }}
         </div>
       </q-card-section>
 
@@ -39,22 +38,7 @@
 </template>
 
 <script setup>
-const trainer = [
-  {
-    id: 1,
-    avatar: "https://cdn.quasar.dev/img/avatar.png",
-    name: "Jascha",
-    pricePerHour: 50.0,
-    tags: ["Wettkampf", "Technik"],
-    content: "Jascha ist brutaler Trainer",
-  },
-  {
-    id: 2,
-    avatar: "https://cdn.quasar.dev/img/avatar.png",
-    name: "Niko",
-    pricePerHour: 200.99,
-    tags: ["Wettkampf", "Technik", "Brutal"],
-    content: "Hallo, Welt",
-  },
-];
+import { useHttp } from "../composables/http";
+
+const trainer = useHttp("/trainer");
 </script>

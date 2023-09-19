@@ -6,9 +6,11 @@
         <img :src="trainer.avatar" />
       </q-avatar>
 
+      <div class="q-my-sm text-grey text-caption">{{ trainer.email }}</div>
+
       <q-list bordered class="q-my-xl full-width">
         <pt-booking-item
-          v-for="session in trainer.sessions"
+          v-for="session in trainer.Sessions"
           :key="session.id"
           :session="session"
         >
@@ -30,7 +32,7 @@
     </div>
 
     <q-btn
-      to="/account"
+      @click="buySessions"
       color="accent"
       label="OK"
       rounded
@@ -42,46 +44,43 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from "vue";
+import { ref, computed, onMounted } from "vue";
+import { api } from "src/boot/axios";
+import { useRouter } from "vue-router";
 
 const props = defineProps({
   id: String,
 });
 
-const gesamt = computed(() => {
-  return trainer.sessions
-    .filter((s) => s.booked)
-    .map((s) => s.price)
-    .reduce((a, b) => a + b, 0);
+const trainer = ref({});
+const router = useRouter();
+
+async function buySessions() {
+  try {
+    await api.post("/buy", {
+      sessions: trainer.value.Sessions.filter((s) => s.booked).map((s) => s.id),
+    });
+    router.push("/account");
+  } catch (err) {
+    console.error("something went wrong", err);
+  }
+}
+
+onMounted(async () => {
+  const res = await api.get(`/trainer/${props.id}`);
+  trainer.value = {
+    ...res.data,
+    Sessions: res.data.Sessions.map((session) => ({
+      ...session,
+      booked: ref(false),
+    })),
+  };
 });
 
-const trainer = reactive({
-  id: props.id,
-  avatar: "https://cdn.quasar.dev/img/avatar.png",
-  name: "Jascha",
-  pricePerHour: 50.0,
-  tags: ["Wettkampf", "Technik"],
-  content: "Jascha ist brutaler Trainer",
-  sessions: [
-    {
-      id: 1,
-      title: "Wettkampfvorbereitung",
-      description:
-        "Coole Beschreibung, ganz lange beschreibung mit viel Inhalt soll auch viel Inhalt haben und ganz lang etwas anzeigen",
-      price: 200,
-      time_in_minutes: 60,
-      time_descriptor: "Jeden Dienstag um 16:00",
-      booked: false,
-    },
-    {
-      id: 2,
-      title: "Grundlagentraining",
-      description: "Für Anfänger",
-      price: 100,
-      time_in_minutes: 120,
-      time_descriptor: "Samstags um 18:00",
-      booked: false,
-    },
-  ],
+const gesamt = computed(() => {
+  if (!trainer.value.Sessions) return 0;
+  return trainer.value.Sessions.filter((s) => s.booked)
+    .map((s) => s.price)
+    .reduce((a, b) => a + b, 0);
 });
 </script>
