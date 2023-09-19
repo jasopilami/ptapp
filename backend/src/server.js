@@ -3,10 +3,9 @@ const Hapi = require("@hapi/hapi");
 const userRoutes = require("./routes/user");
 const authRoutes = require("./routes/auth");
 
-const initialSeed = require("./seed");
 const auth = require("./routes/auth");
 
-initialSeed();
+require("./db");
 
 const init = async () => {
   const server = Hapi.server({
