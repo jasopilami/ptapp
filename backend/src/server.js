@@ -1,16 +1,25 @@
 const Hapi = require("@hapi/hapi");
 
 const userRoutes = require("./routes/user");
+const trainerRoutes = require("./routes/trainer");
 const authRoutes = require("./routes/auth");
+const newsRoutes = require("./routes/news");
+const bookingRoutes = require("./routes/bookings");
 
 const auth = require("./routes/auth");
 
-require("./db");
+const { User, Trainer } = require("./db");
 
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,
     host: "localhost",
+    routes: {
+      cors: {
+        origin: ["*"],
+        credentials: true,
+      },
+    },
   });
 
   await server.register(require("@hapi/cookie"));
@@ -22,7 +31,18 @@ const init = async () => {
       isSecure: false,
     },
     validate: async (request, session) => {
-      const account = await users.find((user) => user.id === session.id);
+      let account = await User.findOne({
+        where: {
+          email: session.email,
+        },
+      });
+
+      if (!account) {
+        account = await Trainer.findOne({
+          where: { email: session.email },
+        });
+      }
+
       if (!account) {
         return { isValid: false };
       }
@@ -32,7 +52,13 @@ const init = async () => {
 
   server.auth.default("session");
 
-  server.route([...userRoutes, ...authRoutes]);
+  server.route([
+    ...userRoutes,
+    ...authRoutes,
+    ...trainerRoutes,
+    ...newsRoutes,
+    ...bookingRoutes,
+  ]);
 
   await server.start();
   console.log(`Server running on ${server.info.uri}`);
