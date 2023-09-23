@@ -1,4 +1,4 @@
-const { Trainer, Session } = require("../db");
+const { Trainer, Session, News } = require("../db");
 
 module.exports = [
   {
@@ -15,6 +15,20 @@ module.exports = [
         },
       });
       return h.response(sessions).code(200);
+    },
+  },
+  {
+    method: "POST",
+    path: "/trainer/news",
+    handler: async (request, h) => {
+      const trainer = request.auth.credentials.toJSON();
+      if (!trainer.isTrainer) {
+        return h.response().code(401);
+      }
+      const news = await News.create({
+        ...request.payload,
+      });
+      return h.response(news).code(201);
     },
   },
   {

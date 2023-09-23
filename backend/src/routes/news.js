@@ -6,7 +6,9 @@ module.exports = [
     path: "/news",
     handler: async (request, h) => {
       try {
-        return await News.findAll();
+        return await News.findAll({
+          order: [["updatedAt", "DESC"]],
+        });
       } catch (err) {
         console.log(err);
       }

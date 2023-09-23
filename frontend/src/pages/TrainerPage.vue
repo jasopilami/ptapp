@@ -3,6 +3,7 @@
     <q-btn to="/account" color="accent"> Zurück </q-btn>
     <pt-header>Trainer Verwaltung</pt-header>
     <div class="q-gutter-md text-center q-mb-xl">
+      <q-btn to="/trainer/createNews" color="accent"> News anlegen </q-btn>
       <q-btn to="/trainer/createTrainer" color="accent">
         Trainer anlegen
       </q-btn>

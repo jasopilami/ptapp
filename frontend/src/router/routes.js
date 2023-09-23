@@ -27,6 +27,10 @@ const routes = [
             component: () => import("pages/CreateTrainerPage.vue"),
           },
           {
+            path: "createNews",
+            component: () => import("pages/CreateNews.vue"),
+          },
+          {
             path: "createSession",
             component: () => import("pages/SessionUpsertPage.vue"),
           },
