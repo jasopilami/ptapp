@@ -12,6 +12,7 @@ module.exports = [
           id: user.id,
           name: user.name,
           email: user.email,
+          isTrainer: user.isTrainer || false,
         })
         .code(200);
     },

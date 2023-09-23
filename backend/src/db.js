@@ -14,10 +14,6 @@ const User = sequelize.define("User", {
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -72,6 +68,11 @@ const Trainer = sequelize.define("Trainer", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  isTrainer: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true,
+  },
 });
 
 const Session = sequelize.define("Session", {
@@ -124,15 +125,15 @@ function checkUniqueEmail(person) {
 }
 
 User.addHook("beforeValidate", "checkUniqueEmail", (user) => {
-  return Trainer.findOne({ where: { email: user.email } }).then(
-    checkUniqueEmail
-  );
+  return Trainer.findOne({
+    where: { email: user.email },
+  }).then(checkUniqueEmail);
 });
 
 Trainer.addHook("beforeValidate", "checkUniqueEmail", (trainer) => {
-  return User.findOne({ where: { email: trainer.email } }).then(
-    checkUniqueEmail
-  );
+  return User.findOne({
+    where: { email: trainer.email },
+  }).then(checkUniqueEmail);
 });
 
 sequelize.sync({ force: true }).then(() => {
@@ -183,7 +184,6 @@ sequelize.sync({ force: true }).then(() => {
       User.findOrCreate({
         where: { email: "arnold@user.de" },
         defaults: {
-          name: "Arnold",
           password: Bcrypt.hashSync("hey,arnold", 10),
         },
       }).then(([userVal]) => {

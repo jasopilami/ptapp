@@ -5,7 +5,8 @@
     <q-card class="q-my-md" v-for="t in trainer" :key="t.id" flat>
       <div class="row">
         <q-avatar size="100px" class="q-mt-md q-ml-md q-mr-md">
-          <img :src="t.avatar" />
+          <img v-if="t.avatar" :src="t.avatar" />
+          <div v-else>{{ t.name[0] }}</div>
         </q-avatar>
         <div class="text-h5 self-center">
           {{ t.name }}

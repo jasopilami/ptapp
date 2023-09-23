@@ -21,6 +21,7 @@
       outlined
       v-model="password"
       label="Password"
+      @keyup.enter="login"
     >
       <template v-slot:append>
         <q-icon
@@ -47,6 +48,7 @@
       color="grey-6"
       flat
       class="full-width q-mt-xl"
+      @click="register"
     />
   </div>
 </template>
@@ -62,15 +64,28 @@ const password = ref("");
 
 const isPwd = ref(true);
 
+async function request(ep) {
+  await api.post(ep, {
+    email: email.value,
+    password: password.value,
+  });
+}
+
+async function register() {
+  try {
+    await request("/register");
+    await login();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 async function login() {
   try {
-    await api.post("/login", {
-      email: email.value,
-      password: password.value,
-    });
+    await request("/login");
     router.push("/");
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
 }
 </script>

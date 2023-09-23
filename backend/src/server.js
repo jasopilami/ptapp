@@ -6,20 +6,12 @@ const authRoutes = require("./routes/auth");
 const newsRoutes = require("./routes/news");
 const bookingRoutes = require("./routes/bookings");
 
-const auth = require("./routes/auth");
-
 const { User, Trainer } = require("./db");
 
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,
     host: "localhost",
-    routes: {
-      cors: {
-        origin: ["*"],
-        credentials: true,
-      },
-    },
   });
 
   await server.register(require("@hapi/cookie"));

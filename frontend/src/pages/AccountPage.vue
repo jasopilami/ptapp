@@ -4,6 +4,14 @@
   <div class="text-center text-h6 text-grey-4">
     <div>{{ user.name }}</div>
     <div>{{ user.email }}</div>
+    <q-btn
+      v-if="user.isTrainer"
+      color="accent"
+      glossy
+      label="Trainer Verwaltung"
+      class="q-mt-md"
+      to="/trainer"
+    />
   </div>
 
   <pt-header>Deine Buchungen</pt-header>
