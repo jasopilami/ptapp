@@ -18,6 +18,9 @@ jobs:
       - name: Install Dependencies
         working-directory: backend
         run: npm install
+      - name: Deploy
+        working-directory: backend
+        run: echo "TODO deployment"
   build-frontend:
     runs-on: ubuntu-latest
     steps:
@@ -33,3 +36,6 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build 
+      - name: Deploy
+        working-directory: frontend
+        run: echo "TODO deployment"
