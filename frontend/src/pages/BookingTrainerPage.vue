@@ -26,7 +26,7 @@
       <div class="text-h6 text-grey-4">Gesamt</div>
 
       <div class="text-h5 text-accent">
-        {{ gesamt }}
+        {{ gesamtBetrag }}
         <q-icon name="euro_symbol" />
       </div>
     </div>
@@ -58,7 +58,9 @@ const router = useRouter();
 async function buySessions() {
   try {
     await api.post("/buy", {
-      sessions: trainer.value.Sessions.filter((s) => s.booked).map((s) => s.id),
+      sessions: trainer.value.Sessions
+        .filter((s) => s.booked)
+        .map((s) => s.id),
     });
     router.push("/account");
   } catch (err) {
@@ -67,6 +69,10 @@ async function buySessions() {
 }
 
 onMounted(async () => {
+  await getTrainerAndEnhanceItsSessionsByBookedFlag();
+});
+
+async function getTrainerAndEnhanceItsSessionsByBookedFlag() {
   const res = await api.get(`/trainer/${props.id}`);
   trainer.value = {
     ...res.data,
@@ -75,9 +81,9 @@ onMounted(async () => {
       booked: ref(false),
     })),
   };
-});
+}
 
-const gesamt = computed(() => {
+const gesamtBetrag = computed(() => {
   if (!trainer.value.Sessions) return 0;
   return trainer.value.Sessions.filter((s) => s.booked)
     .map((s) => s.price)
