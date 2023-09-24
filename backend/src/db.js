@@ -8,6 +8,11 @@ const sequelize = new Sequelize({
   logging: false,
 });
 
+/* ----------------------------------------------------------
+ * | ORM Modelling
+ * ----------------------------------------------------------
+ */
+
 const User = sequelize.define("User", {
   id: {
     type: DataTypes.INTEGER,
@@ -111,6 +116,11 @@ const Booking = sequelize.define("Booking", {
   },
 });
 
+/* ----------------------------------------------------------
+ * | ORM Relations
+ * ----------------------------------------------------------
+ */
+
 Trainer.hasMany(Session);
 Session.belongsTo(Trainer);
 
@@ -120,26 +130,34 @@ Booking.belongsTo(User);
 Session.hasMany(Booking);
 Booking.belongsTo(Session);
 
-function checkUniqueEmail(person) {
-  if (person) throw new Error("Email already taken");
+function ensureUniqueEmailsBetweenUserAndTrainer() {
+  function checkUniqueEmail(person) {
+    if (person) throw new Error("Email already taken");
+  }
+
+  User.addHook("beforeValidate", "checkUniqueEmail", async (user) =>
+    Trainer.findOne({
+      where: { email: user.email },
+    }).then(checkUniqueEmail)
+  );
+
+  Trainer.addHook("beforeValidate", "checkUniqueEmail", async (trainer) =>
+    User.findOne({
+      where: { email: trainer.email },
+    }).then(checkUniqueEmail)
+  );
 }
 
-User.addHook("beforeValidate", "checkUniqueEmail", (user) => {
-  return Trainer.findOne({
-    where: { email: user.email },
-  }).then(checkUniqueEmail);
-});
-
-Trainer.addHook("beforeValidate", "checkUniqueEmail", (trainer) => {
-  return User.findOne({
-    where: { email: trainer.email },
-  }).then(checkUniqueEmail);
-});
+ensureUniqueEmailsBetweenUserAndTrainer();
 
 sequelize.sync({ force: true }).then(() => {
   console.log("Database & tables synced");
   console.log("Seeding...");
 
+  createInitialDataEntriesForDeveloping();
+});
+
+function createInitialDataEntriesForDeveloping() {
   News.findOrCreate({
     where: { id: 1 },
     defaults: {
@@ -219,7 +237,7 @@ sequelize.sync({ force: true }).then(() => {
       });
     });
   });
-});
+}
 
 module.exports = {
   sequelize,

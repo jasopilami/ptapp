@@ -1,6 +1,5 @@
 const Hapi = require("@hapi/hapi");
 
-const userRoutes = require("./routes/user");
 const trainerRoutes = require("./routes/trainer");
 const authRoutes = require("./routes/auth");
 const newsRoutes = require("./routes/news");
@@ -14,6 +13,24 @@ const init = async () => {
     host: "localhost",
   });
 
+  await registerHapiSessionCookies();
+
+  registerServerRoutes(server);
+
+  await server.start();
+  console.log(`Server running on ${server.info.uri}`);
+};
+
+function registerServerRoutes(server) {
+  server.route([
+    ...authRoutes,
+    ...trainerRoutes,
+    ...newsRoutes,
+    ...bookingRoutes,
+  ]);
+}
+
+async function registerHapiSessionCookies() {
   await server.register(require("@hapi/cookie"));
 
   server.auth.strategy("session", "cookie", {
@@ -43,18 +60,7 @@ const init = async () => {
   });
 
   server.auth.default("session");
-
-  server.route([
-    ...userRoutes,
-    ...authRoutes,
-    ...trainerRoutes,
-    ...newsRoutes,
-    ...bookingRoutes,
-  ]);
-
-  await server.start();
-  console.log(`Server running on ${server.info.uri}`);
-};
+}
 
 process.on("unhandledRejection", (err) => {
   console.log(err);
