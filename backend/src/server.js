@@ -13,7 +13,7 @@ const init = async () => {
     host: "localhost",
   });
 
-  await registerHapiSessionCookies();
+  await registerHapiSessionCookies(server);
 
   registerServerRoutes(server);
 
@@ -30,7 +30,7 @@ function registerServerRoutes(server) {
   ]);
 }
 
-async function registerHapiSessionCookies() {
+async function registerHapiSessionCookies(server) {
   await server.register(require("@hapi/cookie"));
 
   server.auth.strategy("session", "cookie", {

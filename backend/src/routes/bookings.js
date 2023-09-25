@@ -18,7 +18,7 @@ async function getAllBookingsByUserId(request, h) {
   });
 }
 
-async function bookSessionForUser() {
+async function bookSessionForUser(request, h) {
   const user = request.auth.credentials.toJSON();
   const { payload } = request;
 
